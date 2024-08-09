@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras import layers, models
+from keras import models
 import tensorflow_datasets as tfds
 import matplotlib.pyplot as plt
 

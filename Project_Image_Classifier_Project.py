@@ -197,23 +197,17 @@ def predict(image_path, model, top_k=5):
     # Get the top K probabilities and class labels
     top_k_probs = np.sort(predictions[0])[-top_k:][::-1]
     top_k_classes = np.argsort(predictions[0])[-top_k:][::-1]
-    
-    # Convert class indices to strings
-    top_k_classes = [str(cls) for cls in top_k_classes]
-    
-    return top_k_probs, top_k_classes
 
-# Plot the input image along with the top 5 classes
+    # Convert class indices to flower names
+    top_k_flower_names = [class_names[str(cls)] for cls in top_k_classes]
+    
+    return top_k_probs, top_k_flower_names
+
 def plot_image_with_predictions(image_path, model, top_k=5):
     # Load and preprocess the image
     image = Image.open(image_path)
-    processed_image = np.asarray(image)
-    processed_image = process_image(processed_image)
-    processed_image = np.expand_dims(processed_image, axis=0)
-    
-    # Get predictions
-    probs, classes = predict(image_path, model, top_k)
-    
+    probs, flower_names = predict(image_path, model, top_k)
+
     # Create figure and axes
     fig, ax = plt.subplots(1, 2, figsize=(12, 6))
     
@@ -223,14 +217,15 @@ def plot_image_with_predictions(image_path, model, top_k=5):
     ax[0].set_title('Input Image')
     
     # Plot the top K predictions
-    ax[1].barh(range(top_k), probs, tick_label=classes, color='skyblue')
+    ax[1].barh(range(top_k), probs, tick_label=flower_names, color='skyblue')
     ax[1].set_yticks(range(top_k))
-    ax[1].set_yticklabels(classes)
+    ax[1].set_yticklabels(flower_names)
     ax[1].set_xlabel('Probability')
     ax[1].set_title(f'Top {top_k} Predictions')
     
     plt.tight_layout()
     plt.show()
-
-image_path = './test_images/wild_pansy.jpg'
+    
+# Example usage
+image_path = './test_images/orange_dahlia.jpg'
 plot_image_with_predictions(image_path, loaded_model, top_k=5)
